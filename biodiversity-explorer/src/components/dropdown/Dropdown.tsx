@@ -72,7 +72,7 @@ const DropDown = ({
                 <div
                     id="dropdown-list"
                     role="listbox"
-                    className=" absolute top-11 left-[2.5%] w-[95%] rounded-md p-1 bg-[var(--color-light-green)] shadow-md z-10  animate-shoot-down"
+                    className=" absolute top-11 left-[2.5%] w-[95%] rounded-md p-1 bg-[var(--color-green)] shadow-md z-10  animate-shoot-down"
                 >
                     {options.map((item) => {
                         const isActive = item.value === selected;
@@ -88,8 +88,8 @@ const DropDown = ({
                                 className={`
                   block w-full text-left p-2 font-semibold transition-colors rounded-sm cursor-pointer
                   ${isActive
-                                        ? "bg-[var(--color-light-green)] text-white"
-                                        : "text-[var(--color-green)] hover:bg-[var(--color-green)] hover:text-white"}
+                                        ? "bg-[var(--color-black)] text-[var(--color-white)]"
+                                        : "text-[var(--color-white)] hover:bg-[var(--color-card-green)] hover:text-[var(--color-white)]"}
                  
                 `}
                             >

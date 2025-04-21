@@ -1,4 +1,3 @@
-// src/components/SearchBar/SearchBar.tsx
 import { FC, useState, useEffect, ChangeEvent } from 'react'
 import searchIcon from '../../assets/search-icon.png'
 import { useDebounce } from '../../hooks/useDebounce'
@@ -21,11 +20,11 @@ const Searchbar: FC<SearchBarProps> = ({ searchTerm, onChange }) => {
     }, [debounced, onChange])
 
     return (
-        <div className="relative w-full max-w-sm">
+        <div className="relative w-full bg-[var(--color-light-green)]  border-[1px] border-[var(--color-border-green)] rounded-full cursor-pointer">
             <img
                 src={searchIcon}
                 alt="Search"
-                className="pointer-events-none absolute left-3 top-1/2 w-5 h-5 -translate-y-1/2 text-gray-500"
+                className="pointer-events-none absolute left-3 top-1/2 w-5 h-5 -translate-y-1/2 "
             />
             <input
                 type="text"
@@ -33,10 +32,9 @@ const Searchbar: FC<SearchBarProps> = ({ searchTerm, onChange }) => {
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                 placeholder="Search..."
                 className="
-          w-full pl-12 pr-4 py-2
-          border border-gray-300 rounded-lg
-          text-gray-500 text-sm
-          focus:outline-none focus:ring-2 focus:ring-green-300
+          w-full pl-12 pr-4 py-1.5
+          border-none outline-none
+          text-gray-400 font-semibold placeholder:text-gray-400
         "
             />
         </div>

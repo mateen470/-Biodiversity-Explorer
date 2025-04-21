@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import SearchBar from './components/searchbar/Searchbar'
 import Filters, { Filters as FiltersType } from './components/filter/Filters'
 import Sort, { SortKey } from './components/sort/Sort'
 
 function App() {
+  const [searchTerm, setSearchTerm] = useState<string>('')
   const [filters, setFilters] = useState<FiltersType>({
     region: '',
     habitat: '',
@@ -11,10 +13,7 @@ function App() {
   })
 
   const handleFilterChange = (key: keyof FiltersType, value: string) => {
-    setFilters(prev => ({
-      ...prev,
-      [key]: value,
-    }))
+    setFilters(prev => ({ ...prev, [key]: value }))
   }
 
   const [sortKey, setSortKey] = useState<SortKey | null>(null)
@@ -24,16 +23,24 @@ function App() {
   }
 
   return (
-    <div className="max-w-[1280px] bg-[var(--color-black)] mx-auto p-8 space-y-6">
+    <div className="max-w-[1280px] bg-[var(--color-black)] mx-auto p-8 space-y-8">
+      <div className='flex items-center gap-4 justify-center w-full'>
+        <SearchBar
+          searchTerm={searchTerm}
+          onChange={setSearchTerm}
+        />
+        <Sort
+          sortKey={sortKey}
+          onSortChange={handleSortChange}
+        />
+      </div>
+
       <Filters
         filters={filters}
         onFilterChange={handleFilterChange}
       />
 
-      <Sort
-        sortKey={sortKey}
-        onSortChange={handleSortChange}
-      />
+
     </div>
   )
 }
