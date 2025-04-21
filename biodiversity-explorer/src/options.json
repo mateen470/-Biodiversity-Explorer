@@ -1,7 +1,7 @@
 {
   "filters": [
     {
-      "name": "region",
+      "name": "Region",
       "options": [
         "Africa",
         "Asia",
@@ -12,7 +12,7 @@
       ]
     },
     {
-      "name": "habitat",
+      "name": "Habitat",
       "options": [
         "Forest",
         "Grassland",
@@ -23,11 +23,11 @@
       ]
     },
     {
-      "name": "threatLevel",
+      "name": "Severity",
       "options": ["Vulnerable", "Endangered", "Critically Endangered"]
     },
     {
-      "name": "taxonomicGroup",
+      "name": "Taxon",
       "options": [
         "Mammals",
         "Birds",
@@ -39,9 +39,9 @@
     }
   ],
   "sortingOptions": [
-    { "label": "Name (A–Z)", "value": "name" },
-    { "label": "Threat Severity", "value": "status" },
-    { "label": "Newest Listed", "value": "newestListed" },
-    { "label": "Oldest Listed", "value": "oldestListed" }
+    { "label": "Name (A–Z)", "value": "Name (A–Z)" },
+    { "label": "Threat Severity", "value": "Threat Severity" },
+    { "label": "Newest Listed", "value": "Newest Listed" },
+    { "label": "Oldest Listed", "value": "Oldest Listed" }
   ]
 }

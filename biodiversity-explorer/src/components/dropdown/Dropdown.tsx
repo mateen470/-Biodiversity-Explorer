@@ -5,7 +5,7 @@ type Option = { name: string; value: string };
 type DropDownProps = {
     name: string;
     options: Option[];
-    selected: string;
+    selected: string | null;
     onChange: (value: string) => void;
 };
 
@@ -35,7 +35,7 @@ const DropDown = ({
     return (
         <div
             ref={containerRef}
-            className="relative w-50"
+            className="relative w-auto"
             role="combobox"
             aria-haspopup="listbox"
             aria-expanded={toggle}
@@ -54,7 +54,7 @@ const DropDown = ({
                     readOnly
                     value={selected || name}
                     onClick={() => setToggle(!toggle)}
-                    className="w-full border-none outline-none text-[var(--color-green)] font-semibold cursor-pointer px-4 py-2"
+                    className="w-full border-none outline-none text-[var(--color-green)] font-semibold cursor-pointer px-3 py-1.5"
                 />
                 <img
                     src={toggleIcon}
@@ -72,7 +72,7 @@ const DropDown = ({
                 <div
                     id="dropdown-list"
                     role="listbox"
-                    className=" absolute top-12 left-[2.5%] w-[95%] rounded-md p-1 bg-[var(--color-light-green)] shadow-md z-10  animate-shoot-down"
+                    className=" absolute top-11 left-[2.5%] w-[95%] rounded-md p-1 bg-[var(--color-light-green)] shadow-md z-10  animate-shoot-down"
                 >
                     {options.map((item) => {
                         const isActive = item.value === selected;
@@ -86,7 +86,7 @@ const DropDown = ({
                                     setToggle(false);
                                 }}
                                 className={`
-                  block w-full text-left px-4 py-2 font-semibold transition-colors rounded-sm cursor-pointer
+                  block w-full text-left p-2 font-semibold transition-colors rounded-sm cursor-pointer
                   ${isActive
                                         ? "bg-[var(--color-light-green)] text-white"
                                         : "text-[var(--color-green)] hover:bg-[var(--color-green)] hover:text-white"}
