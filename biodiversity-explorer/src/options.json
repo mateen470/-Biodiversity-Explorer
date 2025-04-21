@@ -1,0 +1,47 @@
+{
+  "filters": [
+    {
+      "name": "region",
+      "options": [
+        "Africa",
+        "Asia",
+        "Europe",
+        "North America",
+        "South America",
+        "Oceania"
+      ]
+    },
+    {
+      "name": "habitat",
+      "options": [
+        "Forest",
+        "Grassland",
+        "Wetland",
+        "Coastal",
+        "Desert",
+        "Tundra"
+      ]
+    },
+    {
+      "name": "threatLevel",
+      "options": ["Vulnerable", "Endangered", "Critically Endangered"]
+    },
+    {
+      "name": "taxonomicGroup",
+      "options": [
+        "Mammals",
+        "Birds",
+        "Reptiles",
+        "Amphibians",
+        "Fish",
+        "Plants"
+      ]
+    }
+  ],
+  "sortingOptions": [
+    { "label": "Name (A–Z)", "value": "name" },
+    { "label": "Threat Severity", "value": "status" },
+    { "label": "Newest Listed", "value": "newestListed" },
+    { "label": "Oldest Listed", "value": "oldestListed" }
+  ]
+}

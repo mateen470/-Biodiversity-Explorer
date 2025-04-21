@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -7,7 +7,20 @@
   --color-white: rgb(243 255 248);
   --color-green: rgb(27 164 118);
   --color-card-green: rgb(20 37 33);
-  --color-light-green: rgba(27, 164, 118, .15));
+  --color-light-green: rgba(27, 164, 118, 0.15);
+  --color-border-green: rgba(27, 164, 118, 0.1);
+  --animate-shoot-down: shoot-down 0.5s ease forwards;
+
+  @keyframes shoot-down {
+    0% {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @layer base {
@@ -25,5 +38,8 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  .animate-shoot-down {
+    animation: var(--animate-shoot-down);
   }
 }
