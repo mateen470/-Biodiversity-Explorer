@@ -13,7 +13,7 @@ type FiltersProps = {
 
 const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
     return (
-        <div className="flex flex-wrap gap-4 justify-center items-center">
+        <div className="flex flex-wrap gap-4 justify-center items-center ">
             <h1 className='font-bold text-2xl'>Filters :</h1>
             {optionsData.filters.map(({ name, options }) => (
                 <div key={name}>

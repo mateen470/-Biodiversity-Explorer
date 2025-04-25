@@ -45,7 +45,7 @@ const DropDown = ({
                 <div
                     className="absolute -top-5 left-3 text-xs text-[var(--color-green)]"
                 >
-                    {name}"  "
+                    {name}
                 </div>
             )}
             <div className=" bg-[var(--color-light-green)]  border-[1px] border-[var(--color-border-green)] rounded-full cursor-pointer">
