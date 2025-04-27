@@ -1,4 +1,3 @@
-// src/App.tsx
 import { useState, useMemo } from "react";
 import SearchBar from "./components/searchbar/Searchbar";
 import Filters from "./components/filter/Filters";
@@ -17,7 +16,6 @@ const sortKeyMap: Record<SortKey, keyof SpeciesRow> = {
 };
 
 export default function App() {
-  // 1️⃣ Use the hook's Filters type directly
   const [filters, setFilters] = useState<HookFilters>({
     region: "",
     habitat: "",
@@ -25,18 +23,14 @@ export default function App() {
     taxonomicGroup: "",
   });
 
-  // 2️⃣ Search state, debounced
   const [searchTerm, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(searchTerm, 300);
 
-  // 3️⃣ Sort & pagination
   const [sortKey, setSort] = useState<SortKey | null>(null);
   const [visible, setVisible] = useState<number>(20);
 
-  // 4️⃣ Fetch, filter & thumbnail-enrich
   const { data: all, loading, error } = useSpecies(filters);
 
-  // 5️⃣ Memoized text-search
   const searched = useMemo(
     () => all.filter(s =>
       !debouncedSearch ||
@@ -47,7 +41,6 @@ export default function App() {
     [all, debouncedSearch]
   );
 
-  // 6️⃣ Memoized sort
   const arranged = useMemo(() => {
     const arr = [...searched];
     if (!sortKey) return arr;
@@ -71,14 +64,13 @@ export default function App() {
     );
   }, [searched, sortKey]);
 
-  // 7️⃣ Pagination slice
   const displayed = useMemo(
     () => arranged.slice(0, visible),
     [arranged, visible]
   );
 
-  // 8️⃣ Build CardGrid items
   const cards = displayed.map(s => ({
+    id: s.id,
     imgUrl: s.imageUrl,
     title: s.common_name || s.scientific_name,
     summary: s.summary,
@@ -87,7 +79,6 @@ export default function App() {
     onSelect: () => console.log("detail", s.id),
   }));
 
-  // 9️⃣ Handlers
   const loadMore = () => setVisible(v => Math.min(v + 20, arranged.length));
 
   const handleFilterChange = (
@@ -100,13 +91,10 @@ export default function App() {
 
   return (
     <div className="max-w-[1280px] mx-auto p-8 space-y-8">
-      {/* Search */}
       <SearchBar searchTerm={searchTerm} onChange={setSearch} />
 
-      {/* Filters */}
       <Filters filters={filters} onFilterChange={handleFilterChange} />
 
-      {/* Hero */}
       <div className="flex flex-col items-center justify-center gap-6 w-full my-20">
         <h1 className="text-5xl font-bold">Explore Earth’s Endangered Species</h1>
         <h3 className="text-xl text-balance text-center">
@@ -115,12 +103,10 @@ export default function App() {
         </h3>
       </div>
 
-      {/* Sort */}
       <div className="w-full flex justify-end">
         <Sort sortKey={sortKey} onSortChange={setSort} />
       </div>
 
-      {/* Results / Loading / Error / No-Results */}
       {loading ? (
         <div className="flex justify-center">
           <LoadingSpinner />
@@ -140,11 +126,10 @@ export default function App() {
         />
       )}
 
-      {/* Load More */}
       {!loading && displayed.length > 0 && visible < arranged.length && (
         <div className="flex justify-center">
           <button
-            className="mt-6 px-6 py-2 rounded bg-[var(--color-green)] text-white"
+            className="mt-6 px-6 py-2 bg-[var(--color-light-green)]  border-[1px] border-[var(--color-border-green)] rounded-full cursor-pointer text-[var(--color-white)] font-bold text-lg"
             onClick={loadMore}
           >
             Load more

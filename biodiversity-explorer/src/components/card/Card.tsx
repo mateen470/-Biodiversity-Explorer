@@ -1,15 +1,22 @@
+import { useNavigate } from "react-router-dom";
+
 export type CardProps = {
+    id: number;
     imgUrl: string;
     title: string;
     summary: string;
     labels: string[];
-    conservationActions: string;
     onSelect: () => void
 }
 
-const Card = ({ imgUrl, title, summary, labels, conservationActions, onSelect }: CardProps) => {
+const Card = ({ id, imgUrl, title, summary, labels }: CardProps) => {
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate(`/conservation/${id}`);
+    };
+
     return (
-        <div role="button" className="flex flex-col w-auto min-h-[350px] bg-[var(--color-black)] cursor-pointer" onClick={() => onSelect()}>
+        <div role="button" className="flex flex-col w-auto min-h-[350px] bg-[var(--color-black)] cursor-pointer" onClick={handleClick}>
             <div className="h-[50%] w-full"><img src={imgUrl} className="w-full h-full object-cover rounded-t-lg" alt={`Photo of ${title}`} /></div>
             <div className="h-[50%] w-full bg-[var(--color-card-green)] rounded-b-lg p-5">
                 <h1 className="text-xl font-bold text-left">{title}</h1>
