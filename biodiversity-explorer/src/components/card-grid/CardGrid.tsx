@@ -20,7 +20,7 @@ const CardGrid: React.FC<CardGridProps> = ({
     if (error) return <div className="text-red-500">\{error}</div>;
 
     return (
-        <ul role="list" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ul role="list" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {items.map(item => (
                 <li key={item.title} role="listitem">
                     <Card

@@ -1,68 +1,106 @@
-// File: src/hooks/useSpecies.ts
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useMemo, useState } from "react";
+import speciesRaw from "../species.json";
 
-export interface SpeciesInfo {
+export interface SpeciesRow {
   id: number;
   scientific_name: string;
-  main_common_name: string;
-  category: string;
-  taxonomic_group: string;
-  imageUrl?: string;
+  common_name: string;
+  summary: string;
+  conservation_action: string;
+  threat_level: "Vulnerable" | "Endangered" | "Critically Endangered";
+  region:
+    | "Africa"
+    | "Asia"
+    | "Europe"
+    | "North America"
+    | "South America"
+    | "Oceania";
+  habitat: "Forest" | "Grassland" | "Wetland" | "Coastal" | "Desert" | "Tundra";
+  taxon: "Mammals" | "Birds" | "Reptiles" | "Amphibians" | "Fish" | "Plants";
+  published_year: number;
+  imageUrl: string;
 }
 
-export function useINaturalistSpecies(count: number = 20) {
-  const [data, setData] = useState<SpeciesInfo[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | undefined>(undefined);
+export interface Filters {
+  region: SpeciesRow["region"] | "";
+  habitat: SpeciesRow["habitat"] | "";
+  threatLevel: SpeciesRow["threat_level"] | "";
+  taxonomicGroup: SpeciesRow["taxon"] | "";
+}
+
+const imgCache = new Map<string, string>();
+const BLANK_THUMB =
+  "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjYwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNkZGRkZGQiIC8+PC9zdmc+";
+
+async function fetchThumb(name: string): Promise<string> {
+  if (imgCache.has(name)) {
+    return imgCache.get(name)!;
+  }
+  try {
+    const res = await fetch(
+      `https://api.inaturalist.org/v1/taxa?q=${encodeURIComponent(
+        name
+      )}&per_page=1`
+    );
+    const json = await res.json();
+    const photo = json?.results?.[0]?.default_photo;
+    const url = photo?.medium_url || photo?.url || "";
+    imgCache.set(name, url || "");
+    return url || "";
+  } catch {
+    imgCache.set(name, "");
+    return "";
+  }
+}
+
+export function useSpecies(filters: Filters) {
+  const [data, setData] = useState<SpeciesRow[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const filtered = useMemo<SpeciesRow[]>(() => {
+    return (speciesRaw as SpeciesRow[]).filter((row) => {
+      if (filters.region && row.region !== filters.region) return false;
+      if (filters.habitat && row.habitat !== filters.habitat) return false;
+      if (filters.threatLevel && row.threat_level !== filters.threatLevel)
+        return false;
+      if (filters.taxonomicGroup && row.taxon !== filters.taxonomicGroup)
+        return false;
+      return true;
+    });
+  }, [filters]);
 
   useEffect(() => {
-    async function fetchSpecies() {
+    let isCancelled = false;
+    async function enrich() {
       setLoading(true);
-      setError(undefined);
-
+      setError(null);
       try {
-        const res = await axios.get<{
-          results: Array<{
-            id: number;
-            name: string;
-            preferred_common_name?: string;
-            conservation_status?: { status: string };
-            default_photo?: { url: string };
-            ancestors?: Array<{ rank: string; name: string }>;
-          }>;
-        }>("https://api.inaturalist.org/v1/taxa", {
-          params: { rank: "species", per_page: count },
-        });
-
-        const speciesList: SpeciesInfo[] = res.data.results.map((t) => {
-          // 1) Default ancestors to empty array if missing
-          const ancestors = Array.isArray(t.ancestors) ? t.ancestors : [];
-          // 2) Safely pick out the 'class' ancestor
-          const taxClass =
-            ancestors.find((a) => a.rank === "class")?.name || "Unknown";
-
-          return {
-            id: t.id,
-            scientific_name: t.name,
-            main_common_name: t.preferred_common_name || t.name,
-            category: t.conservation_status?.status || "Unknown",
-            taxonomic_group: taxClass,
-            imageUrl: t.default_photo?.url,
-          };
-        });
-
-        setData(speciesList);
-      } catch (e: any) {
-        console.error("Error fetching iNaturalist species:", e);
-        setError(e.message || "Failed to fetch species");
+        const enriched = await Promise.all(
+          filtered.map(async (row) => {
+            const thumb = await fetchThumb(row.scientific_name);
+            return { ...row, imageUrl: thumb || BLANK_THUMB };
+          })
+        );
+        if (!isCancelled) {
+          setData(enriched);
+        }
+      } catch (err: any) {
+        if (!isCancelled) {
+          setError(err?.message || "Failed to load thumbnails");
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     }
 
-    fetchSpecies();
-  }, [count]);
+    enrich();
+    return () => {
+      isCancelled = true;
+    };
+  }, [filtered]);
 
   return { data, loading, error };
 }
