@@ -9,6 +9,7 @@ import LoadingSpinner from "./utility/LoadingSpinner";
 import { useSpecies, SpeciesRow } from "./hooks/useSpecies";
 import { useDebounce } from "./hooks/useDebounce";
 
+// Mapping from UI sort labels to actual SpeciesRow fields
 const sortKeyMap: Record<SortKey, keyof SpeciesRow> = {
   "Name (A–Z)": "scientific_name",
   "Threat Severity": "threat_level",
@@ -16,7 +17,9 @@ const sortKeyMap: Record<SortKey, keyof SpeciesRow> = {
   "Oldest Listed": "published_year",
 };
 
+// Handles search, filter, sort, pagination, and routing to detail pages
 export default function App() {
+  // State: current filters (region, habitat, severity, taxon)
   const [filters, setFilters] = useState<HookFilters>({
     region: "",
     habitat: "",
@@ -24,30 +27,37 @@ export default function App() {
     taxonomicGroup: "",
   });
 
+  // State: raw search input and debounced value for performance
   const [searchTerm, setSearch] = useState<string>("");
   const debouncedSearch = useDebounce(searchTerm, 300);
 
+  // State: current sort key and number of visible items (pagination)
   const [sortKey, setSort] = useState<SortKey | null>(null);
   const [visible, setVisible] = useState<number>(20);
 
+  // Custom hook: returns filtered/thumbnails-enriched species data
   const { data: all, loading, error } = useSpecies(filters);
 
+  // Memoized search: filter `all` by debounced search input
   const searched = useMemo(
-    () => all.filter(s =>
-      !debouncedSearch ||
-      (`${s.scientific_name}${s.common_name}`)
-        .toLowerCase()
-        .includes(debouncedSearch.toLowerCase())
-    ),
+    () =>
+      all.filter(s =>
+        !debouncedSearch ||
+        (`${s.scientific_name}${s.common_name}`)
+          .toLowerCase()
+          .includes(debouncedSearch.toLowerCase())
+      ),
     [all, debouncedSearch]
   );
 
+  // Memoized sorting: apply selected sortKey to `searched`
   const arranged = useMemo(() => {
     const arr = [...searched];
-    if (!sortKey) return arr;
+    if (!sortKey) return arr; // no sort: return copy
 
     const field = sortKeyMap[sortKey];
     if (field === "published_year") {
+      // Numeric sort for year
       const desc = sortKey === "Newest Listed";
       return arr.sort((a, b) =>
         desc
@@ -56,20 +66,24 @@ export default function App() {
       );
     }
     if (field === "threat_level") {
+      // Custom rank sort for threat levels
       const rank = (t: SpeciesRow["threat_level"]) =>
         t === "Critically Endangered" ? 0 : t === "Endangered" ? 1 : 2;
       return arr.sort((a, b) => rank(a.threat_level) - rank(b.threat_level));
     }
+    // Default lexicographic sort for string fields
     return arr.sort((a, b) =>
       (a[field] as string).localeCompare(b[field] as string)
     );
   }, [searched, sortKey]);
 
+  // Pagination slice: only show the first `visible` items
   const displayed = useMemo(
     () => arranged.slice(0, visible),
     [arranged, visible]
   );
 
+  // Prepare card props for rendering in CardGrid
   const cards = displayed.map(s => ({
     id: s.id,
     imgUrl: s.imageUrl,
@@ -77,11 +91,13 @@ export default function App() {
     summary: s.summary,
     labels: [s.threat_level, s.taxon, s.region],
     conservationActions: s.conservation_action,
-    onSelect: () => console.log("detail", s.id),
+    onSelect: () => console.log("detail", s.id), // placeholder
   }));
 
+  // Handler to show more items when "Load more" is clicked
   const loadMore = () => setVisible(v => Math.min(v + 20, arranged.length));
 
+  // Handler for updating filter state; resets pagination
   const handleFilterChange = (
     key: keyof HookFilters,
     value: string
@@ -130,7 +146,7 @@ export default function App() {
       {!loading && displayed.length > 0 && visible < arranged.length && (
         <div className="flex justify-center">
           <button
-            className="mt-6 px-6 py-2 bg-[var(--color-light-green)]  border-[1px] border-[var(--color-border-green)] rounded-full cursor-pointer text-[var(--color-white)] font-bold text-lg"
+            className="mt-6 px-6 py-2 bg-[var(--color-light-green)] border-[1px] border-[var(--color-border-green)] rounded-full cursor-pointer text-[var(--color-white)] font-bold text-lg"
             onClick={loadMore}
           >
             Load more

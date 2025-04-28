@@ -1,37 +1,44 @@
 import { useState, useRef, useEffect } from "react";
-
 import toggleIcon from "../../assets/dropdown-arrow.png";
 
 type Option = { name: string; value: string };
+
 type DropDownProps = {
     name: string;
     options: Option[];
     selected: string | null;
-    onChange: (value: string) => void;
+    onChange: (value: string) => void; // Callback when an option is chosen
 };
 
-const DropDown = ({
+
+//DropDown component: a custom-styled select box that toggles a list of options.
+// - Click input or arrow to open/close the dropdown menu.
+// - Click outside to close the menu.
+const DropDown: React.FC<DropDownProps> = ({
     name,
     options,
     selected,
     onChange,
-}: DropDownProps) => {
+}) => {
+    // State for dropdown open/closed
     const [toggle, setToggle] = useState(false);
+    // Ref to the dropdown container, to detect outside clicks
     const containerRef = useRef<HTMLDivElement>(null);
 
+    // Effect to listen for clicks outside the dropdown
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (
                 containerRef.current &&
                 !containerRef.current.contains(event.target as Node)
             ) {
-                setToggle(false);
+                setToggle(false); // close dropdown if clicked outside
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
         return () =>
             document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, []); // empty deps: attach listener once
 
     return (
         <div
@@ -42,14 +49,14 @@ const DropDown = ({
             aria-expanded={toggle}
             aria-controls="dropdown-list"
         >
+            {/* Floating label above input when something is selected */}
             {selected && (
-                <div
-                    className="absolute -top-5 left-3 text-xs text-[var(--color-green)]"
-                >
+                <div className="absolute -top-5 left-3 text-xs text-[var(--color-green)]">
                     {name}
                 </div>
             )}
-            <div className=" bg-[var(--color-light-green)]  border-[1px] border-[var(--color-border-green)] rounded-full cursor-pointer">
+
+            <div className="bg-[var(--color-light-green)] border-[1px] border-[var(--color-border-green)] rounded-full cursor-pointer">
                 <input
                     type="text"
                     readOnly
@@ -62,8 +69,8 @@ const DropDown = ({
                     onClick={() => setToggle(!toggle)}
                     className={`
             absolute right-3 top-1/2 transform -translate-y-1/2
-            h-auto w-4 transition-transform duration-400 ease-in-out cursor-pointer
-            ${toggle ? "rotate-180" : "rotate-0"}
+            h-auto w-4 transition-transform duration-300 ease-in-out cursor-pointer
+            ${toggle ? "rotate-180" : "rotate-0"}  
           `}
                     aria-hidden="true"
                 />
@@ -73,7 +80,10 @@ const DropDown = ({
                 <div
                     id="dropdown-list"
                     role="listbox"
-                    className=" absolute top-11 left-[2.5%] w-[95%] rounded-md p-1 bg-[var(--color-green)] shadow-md z-10  animate-shoot-down"
+                    className="
+            absolute top-11 left-[2.5%] w-[95%]
+            rounded-md p-1 bg-[var(--color-green)] shadow-md z-10 animate-shoot-down
+          "
                 >
                     {options.map((item) => {
                         const isActive = item.value === selected;
@@ -90,8 +100,8 @@ const DropDown = ({
                   block w-full text-left p-2 font-semibold transition-colors rounded-sm cursor-pointer
                   ${isActive
                                         ? "bg-[var(--color-black)] text-[var(--color-white)]"
-                                        : "text-[var(--color-white)] hover:bg-[var(--color-card-green)] hover:text-[var(--color-white)]"}
-                 
+                                        : "text-[var(--color-white)] hover:bg-[var(--color-card-green)]"
+                                    }
                 `}
                             >
                                 {item.name}
@@ -103,4 +113,5 @@ const DropDown = ({
         </div>
     );
 };
+
 export default DropDown;
