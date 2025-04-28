@@ -91,7 +91,7 @@ export default function App() {
     summary: s.summary,
     labels: [s.threat_level, s.taxon, s.region],
     conservationActions: s.conservation_action,
-    onSelect: () => console.log("detail", s.id), // placeholder
+    onSelect: () => console.log("detail", s.id), 
   }));
 
   // Handler to show more items when "Load more" is clicked
