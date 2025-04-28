@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+
 import SearchBar from "./components/searchbar/Searchbar";
 import Filters from "./components/filter/Filters";
 import type { Filters as HookFilters } from "./hooks/useSpecies";
@@ -112,7 +113,7 @@ export default function App() {
           <LoadingSpinner />
         </div>
       ) : error ? (
-        <div className="text-red-600 text-center">Error loading data</div>
+        <div className="text-red-500 text-center">Error loading data</div>
       ) : displayed.length === 0 ? (
         <div className="text-center text-gray-600">
           No species match your criteria.
@@ -122,7 +123,7 @@ export default function App() {
           items={cards}
           onCardSelect={c => console.log("detail", c)}
           loading={false}
-          error={null}
+          error={undefined}
         />
       )}
 

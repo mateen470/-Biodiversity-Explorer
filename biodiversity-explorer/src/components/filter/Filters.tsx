@@ -1,14 +1,11 @@
 import React from 'react';
+
 import DropDown from '../dropdown/Dropdown';
 import optionsData from '../../options.json';
-
-// 1️⃣ Import the hook’s Filters type
 import type { Filters as HookFilters } from '../../hooks/useSpecies';
 
-// 2️⃣ Derive the label union from your JSON
 type FilterLabel = typeof optionsData.filters[number]['name'];
 
-// 3️⃣ Map UI labels → hook keys
 const labelToKey: Record<FilterLabel, keyof HookFilters> = {
   Region:       'region',
   Habitat:      'habitat',
@@ -17,7 +14,7 @@ const labelToKey: Record<FilterLabel, keyof HookFilters> = {
 };
 
 interface FiltersProps {
-  filters: HookFilters;                                // use the same Filters
+  filters: HookFilters;                               
   onFilterChange: (key: keyof HookFilters, value: string) => void;
 }
 
@@ -32,7 +29,7 @@ const Filters: React.FC<FiltersProps> = ({ filters, onFilterChange }) => {
             <DropDown
               name={name}
               options={options.map(o => ({ name: o, value: o }))}
-              selected={filters[key]}                   // controlled value
+              selected={filters[key]}                  
               onChange={value => onFilterChange(key, value)}
             />
           </div>

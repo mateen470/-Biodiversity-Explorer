@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import speciesRaw from '../../species.json';
-import LoadingSpinner from '../../utility/LoadingSpinner';
-import type { SpeciesRow } from '../../hooks/useSpecies';
+
+import speciesRaw from '../species.json';
+import LoadingSpinner from '../utility/LoadingSpinner';
+import type { SpeciesRow } from '../hooks/useSpecies';
 
 export const ConservationAction: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -21,8 +22,12 @@ export const ConservationAction: React.FC = () => {
                 } else {
                     setSpecies(found);
                 }
-            } catch (e: any) {
-                setError(e.message || 'Failed to load species');
+            } catch (e: unknown) {
+                if (e instanceof Error) {
+                    setError(e.message);
+                } else {
+                    setError(String(e));
+                }
             } finally {
                 setLoading(false);
             }
@@ -30,7 +35,7 @@ export const ConservationAction: React.FC = () => {
     }, [id]);
 
     if (loading) return <LoadingSpinner />;
-    if (error) return <div className="text-red-600 text-center">{error}</div>;
+    if (error) return <div className="text-red-500 text-center">{error}</div>;
     if (!species) return null;
 
     const name = species.common_name || species.scientific_name;
@@ -43,13 +48,13 @@ export const ConservationAction: React.FC = () => {
             <h1 className="text-4xl font-bold">{name}</h1>
             <p className="text-lg text-gray-300">{species.summary}</p>
             <div className="flex flex-wrap gap-2">
-                {[species.threat_level, species.taxon, species.region].map((lab, i) => (
+                {[species.threat_level, species.taxon, species.region].map((label, i) => (
                     <span key={i} className="px-3 py-1 bg-[var(--color-green)] rounded-full text-sm font-medium">
-                        {lab}
+                        {label}
                     </span>
                 ))}
             </div>
-            <hr className="border-green-600" />
+            <hr className="border-[var(--color-green)]" />
             <div className="prose prose-invert">
                 <h2 className='text-2xl font-bold text-center'>Conservation Actions</h2>
                 <p className='text-center'>{species.conservation_action}</p>

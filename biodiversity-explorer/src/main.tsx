@@ -6,7 +6,7 @@ import {
   Route,
 } from "react-router-dom";
 import App from "./App";
-import { ConservationAction } from "./components/conservation-actions/ConservationAction";
+import { ConservationAction } from "./pages/ConservationAction";
 
 const rootElement = document.getElementById("root")!;
 createRoot(rootElement).render(

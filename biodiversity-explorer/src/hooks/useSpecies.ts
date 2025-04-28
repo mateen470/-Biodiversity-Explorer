@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+
 import speciesRaw from "../species.json";
 
 export interface SpeciesRow {
@@ -85,9 +86,10 @@ export function useSpecies(filters: Filters) {
         if (!isCancelled) {
           setData(enriched);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (!isCancelled) {
-          setError(err?.message || "Failed to load thumbnails");
+          if (err instanceof Error) setError(err.message);
+          else setError(String(err));
         }
       } finally {
         if (!isCancelled) {

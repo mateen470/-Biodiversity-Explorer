@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+
 import toggleIcon from "../../assets/dropdown-arrow.png";
 
 type Option = { name: string; value: string };

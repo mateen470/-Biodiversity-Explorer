@@ -16,9 +16,9 @@ const Card = ({ id, imgUrl, title, summary, labels }: CardProps) => {
     };
 
     return (
-        <div role="button" className="flex flex-col w-auto min-h-[350px] bg-[var(--color-black)] cursor-pointer" onClick={handleClick}>
-            <div className="h-[50%] w-full"><img src={imgUrl} className="w-full h-full object-cover rounded-t-lg" alt={`Photo of ${title}`} /></div>
-            <div className="h-[50%] w-full bg-[var(--color-card-green)] rounded-b-lg p-5">
+        <div role="button" className="flex flex-col w-auto h-autp bg-[var(--color-black)] cursor-pointer shadow-xs transition-shadow duration-300 hover:shadow-[0_0_20px_rgba(27,164,118,0.7)] focus:outline-none focus:ring-2 focus:ring-[var(--color-green)] rounded-lg" onClick={handleClick}>
+            <div className="h-[55%] w-full"><img src={imgUrl} className="w-full h-full object-cover rounded-t-lg" alt={`Photo of ${title}`} /></div>
+            <div className="h-[45%] w-full bg-[var(--color-card-green)] rounded-b-lg p-5">
                 <h1 className="text-xl font-bold text-left">{title}</h1>
                 <h3 className="text-lg line-clamp-3 overflow-ellipsis mb-2">{summary}</h3>
                 <div className="flex items-center justify-start gap-2 flex-wrap">

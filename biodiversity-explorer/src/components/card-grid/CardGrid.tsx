@@ -1,4 +1,5 @@
 import React from 'react';
+
 import Card, { CardProps } from '../card/Card';
 import LoadingSpinner from '../../utility/LoadingSpinner';
 
@@ -22,7 +23,7 @@ const CardGrid: React.FC<CardGridProps> = ({
     return (
         <ul role="list" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
             {items.map(item => (
-                <li key={item.title} role="listitem">
+                <li key={item.title} role="listitem" className='h-auto'>
                     <Card
                         {...item}
                         onSelect={() => onCardSelect(item)}
